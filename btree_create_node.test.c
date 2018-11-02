@@ -13,7 +13,8 @@ int		main (void)
 	*item = 123;
 	printf ("testing btree_create_node\n");
 	ptr = (void*)item;
-	if (node = btree_create_node (ptr));
+	node = btree_create_node (ptr);
+	if (node);
 	{
 		if (*((int*)(node->item)) != 123)
 		{
