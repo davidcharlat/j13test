@@ -10,11 +10,12 @@ int		main (void)
 	t_btree	*node;
 	int		*item;
 	
-	*item = 123;
 	printf ("testing btree_create_node\n");
+	node = NULL;
+	*item = 123;
 	ptr = (void*)item;
 	node = btree_create_node (ptr);
-	if (node);
+	if (node)
 	{
 		if (*((int*)(node->item)) != 123)
 		{
