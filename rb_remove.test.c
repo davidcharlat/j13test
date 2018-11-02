@@ -150,7 +150,7 @@ end of rb_insert_test_dcharlat
 
 void	freef (void* node)
 {
-
+	free (node);
 }
 
 
@@ -279,26 +279,20 @@ printf("verifying tree \n");
 	cursor = list_of_node;
 	while (cursor && cursor->next)
 	{
-	printf ("cmp %s and %s\n", (char*)(cursor->data), (char*)(cursor->next->data));
 		if (cmp_1st_char((char*)(cursor->data), (char*)(cursor->next->data)) > 0)
 		{
-			printf("error\n");
+			printf (" error while cmp %s and %s : tree is not ordered\n", (char*)(cursor->data), (char*)(cursor->next->data));
 			return -1;
 		}
 		cursor = cursor->next;
 	}
-	printf ("OK\n");
-	
 	btree_apply_infix_test_dcharlat (root, &count_black_test_dcharlat_test_dcharlat);
-	printf ("\nnumber of black for each leave: %d\n", nb + 1);
 	btree_apply_infix_test_dcharlat (root, &count_node_test_dcharlat);
-	printf ("max number of node for each leave: %d\n", nbnode + 1);
 	if ((nb + 1) < ((nbnode + 1) / 2))
 	{
 		printf ("Error: rules of rb trees arent't respected\n");
 		return (-1);
 	}
-	printf ("OK\n");
 	return nb;
 }
 
@@ -339,6 +333,7 @@ void	btree_apply_by_level_test_dcharlat(t_rb_node *root, void (*applyf)(void *it
 	}	
 }
 
+
 void	to_applyf(void *item, int current_level, int is_first_elem)
 {
 	t_rb_node *node;
@@ -354,32 +349,35 @@ void	to_applyf(void *item, int current_level, int is_first_elem)
 	else printf ("parent : NULL\n");
 }
 
+
 int		main (void)
 {
-	char	c[19][9] = {"are", "chief", "hello", "bred", "hello", "elephant", "guy", "yellow", "zaz", "19", "19", "wc", "tree", "star", "BIG", "+", "very bad", "David", "Charlat"};
+	char	c[51][9] = {"David", "Charlat", "BIG", "A", "91", "88", "7", "66", "569", "411", "21", "3", "00000", "E", "Fire", "Guy", "Hello", "I", "JKL", "KL", "L", "Mum", "(yoyo)", "Why", "ZZTop", "very bad", "A", "bred", "low", "no", "pipe", "**", "are", "chief", "hello", "bred", "hello", "elephant", "guy", "yellow", "zaz", "19", "19", "wc", "tree", "star", "BIG", "+", "very bad", "David", "rest"};
 	t_rb_node	*root;
 	int		i;
+	int		j = 0;
 
 	i = 0;
 	root = NULL;
-	while (i < 19) 
+	printf("creating a tree\n");
+	while (i < 50) 
 	{
 	rb_insert_test_dcharlat(&root, &c[i], &cmp_1st_char);
 	i++;
 	}
-	i=33;
-	while (i-- >= 0)
+	btree_apply_by_level_test_dcharlat(root, &to_applyf);
+	i = 53;
+	while (i-- > 0)
 	{
-		btree_apply_by_level_test_dcharlat(root, &to_applyf);
-printf("removing %s\n", c[i%19]);
-		rb_remove(&root, &c[i%19], &cmp_1st_char, &freef);
-printf("removed\n");
-		verify_tree_test_dcharlat (root);
+		printf("removing %s ; ", c[i%51]);
+		rb_remove(&root, &c[i%51], &cmp_1st_char, &freef);
+		j = verify_tree_test_dcharlat (root);
+		if (j == -1)
+		{
+			printf ("error\n");
+			return (0);
+		}
 	}
-	if (i>0)
-	{
-		printf ("each leave has got the same number of black node, rules of rb trees seems respected, and the tree is ordered\nrb_insert OK\n");
-		return (0);
-	}
+	printf("rb_remove OK\n");
 	return (1);
 }
